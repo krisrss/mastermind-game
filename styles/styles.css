@@ -92,3 +92,9 @@
     line-height: 30px;
     font-size: 2em;
 }
+
+.submitButton{
+    float: right;    
+    margin-top: 8px;
+    margin-right: 10px;
+}
