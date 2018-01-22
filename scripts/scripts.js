@@ -5,6 +5,7 @@
     const correctPebbleList = document.querySelector("#correct-list");
     const optionPebbles = document.querySelectorAll(".option-pebble");
     const optionList = document.querySelector("#option-list");
+    const clearButton = document.querySelector("#clear-button");
 
 
     //Create an HTML element, with attribute
@@ -45,7 +46,7 @@
 
 
     //Initialize the game board with default state
-    function initializeGame(){
+    function initializeGame() {
         GameBoard.gameActive = true;
         applyColors(optionPebbles, GameBoard.gameColors);
         GameBoard.applyCorrectPebbles();
@@ -53,7 +54,7 @@
         GameBoard.currentRow = document.querySelectorAll(".attempt-el-wrapper")[9];
         selectCheckButton(GameBoard.currentRow).style.visibility = "visible";
         GameBoard.currentRow.style.backgroundColor = "grey";
-    
+
     };
 
 
@@ -161,9 +162,9 @@
     };
 
 
-    function revealCorrectColors(){
+    function revealCorrectColors() {
         let selectPebbles = correctPebbleList.querySelectorAll(".correct-pebble");
-        applyColors(selectPebbles,GameBoard.codeToGuess);
+        applyColors(selectPebbles, GameBoard.codeToGuess);
     }
 
     //Produce validation result list, displaying which colors were guessed
@@ -186,12 +187,13 @@
         }
     };
 
-    function removeCurrentFocus(currentButton){
+    function removeCurrentFocus(currentButton) {
         currentButton.style.visibility = "hidden";
-        GameBoard.currentRow.style.backgroundColor = ""; 
+        GameBoard.currentRow.style.backgroundColor = "";
     }
 
-    function moveRowFocus(currentButton,nextRow){
+    //Move focus of the row to the row above
+    function moveRowFocus(currentButton, nextRow) {
         removeCurrentFocus(currentButton);
         selectCheckButton(nextRow).style.visibility = "visible";
         nextRow.style.backgroundColor = "grey";
@@ -216,9 +218,7 @@
     }
 
 
-
-
-    //Validate user choice by clicking select button
+    //Validate user choice
     attemptContent.addEventListener("click", function (el) {
         const clickedEl = el.target;
 
@@ -233,12 +233,24 @@
                     selectNextRow(clickedEl, rowAbove);
                 };
             }
-            else{
-                alert("You need to select " + GameBoard.pebbleNr +" pebbles to proceed!");
+            else {
+                alert("You need to select " + GameBoard.pebbleNr + " pebbles to proceed!");
             };
         }
     });
 
+
+    //Clear currently selected choice
+    clearButton.addEventListener("click", function () {
+        if (GameBoard.gameActive === true) {
+            GameBoard.clickedColors = [];
+            const attemptPebbles = selectAttemptPebbles(GameBoard.currentRow);
+
+            for (let i = 0; i < attemptPebbles.length; i++) {
+                attemptPebbles[i].style.backgroundColor = "";
+            }
+        }
+    });
 
 
     //Apply "select", click event to all option pebbles

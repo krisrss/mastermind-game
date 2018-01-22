@@ -98,3 +98,9 @@
     margin-top: 8px;
     margin-right: 10px;
 }
+
+#clear-button{
+    float: right;
+    margin-right: 16px;
+    margin-top: 45px;
+}
