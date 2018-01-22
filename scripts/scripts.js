@@ -154,11 +154,17 @@
             };
 
             GameBoard.gameActive = false;
-
+            revealCorrectColors();
             removeCurrentFocus(selectCheckButton(GameBoard.currentRow));
 
         }
     };
+
+
+    function revealCorrectColors(){
+        let selectPebbles = correctPebbleList.querySelectorAll(".correct-pebble");
+        applyColors(selectPebbles,GameBoard.codeToGuess);
+    }
 
     //Produce validation result list, displaying which colors were guessed
     function produceValidationResult(clickedCol, generatedCol, index) {
@@ -204,6 +210,7 @@
         else {
             alert("Game Over you lost!");
             GameBoard.gameActive = false;
+            revealCorrectColors();
             removeCurrentFocus(currentRow);
         }
     }
