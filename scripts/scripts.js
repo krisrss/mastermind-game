@@ -6,6 +6,7 @@
     const optionPebbles = document.querySelectorAll(".option-pebble");
     const optionList = document.querySelector("#option-list");
     const clearButton = document.querySelector("#clear-button");
+    const newGameButton = document.querySelector("#newgame-button");
 
 
     //Create an HTML element, with attribute
@@ -43,18 +44,17 @@
 
 
     initializeGame();//Game starting point
+    applyColors(optionPebbles, GameBoard.gameColors);
 
 
     //Initialize the game board with default state
     function initializeGame() {
         GameBoard.gameActive = true;
-        applyColors(optionPebbles, GameBoard.gameColors);
         GameBoard.applyCorrectPebbles();
         GameBoard.applyGameRows();
         GameBoard.currentRow = document.querySelectorAll(".attempt-el-wrapper")[9];
         selectCheckButton(GameBoard.currentRow).style.visibility = "visible";
         GameBoard.currentRow.style.backgroundColor = "grey";
-
     };
 
 
@@ -200,6 +200,19 @@
         GameBoard.currentRow = nextRow;
     };
 
+    //Apply "select", click event to all option pebbles
+    optionList.addEventListener("click", function (el) {
+        const selectedEl = el.target;
+        const selectPebbles = selectAttemptPebbles(GameBoard.currentRow);
+
+        if (selectedEl.className === "option-pebble"
+            && GameBoard.clickedColors.length < GameBoard.pebbleNr
+            && GameBoard.gameActive === true) {
+            GameBoard.clickedColors.push(selectedEl.style.backgroundColor);
+        }
+
+        applyColors(selectPebbles, GameBoard.clickedColors);
+    });
 
     //Check, if player has any remaining attempts to play game
     function selectNextRow(currentRow, rowAbove) {
@@ -222,6 +235,7 @@
     attemptContent.addEventListener("click", function (el) {
         const clickedEl = el.target;
 
+
         if (clickedEl.className === "submitButton" && GameBoard.gameActive === true) {
             if (GameBoard.clickedColors.length === GameBoard.pebbleNr) {
                 const rowAbove = GameBoard.currentRow.previousElementSibling;
@@ -239,7 +253,6 @@
         }
     });
 
-
     //Clear currently selected choice
     clearButton.addEventListener("click", function () {
         if (GameBoard.gameActive === true) {
@@ -253,16 +266,22 @@
     });
 
 
-    //Apply "select", click event to all option pebbles
-    optionList.addEventListener("click", function (el) {
-        const selectedEl = el.target;
-        const selectPebbles = selectAttemptPebbles(GameBoard.currentRow);
-
-        if (selectedEl.className === "option-pebble" && GameBoard.clickedColors.length < GameBoard.pebbleNr) {
-            GameBoard.clickedColors.push(selectedEl.style.backgroundColor);
+    //Remove elements from the parent element
+    function removeElements(parentEl, childEl) {
+        for (let i = 0; i < childEl.length; i++) {
+            parentEl.removeChild(childEl[i]);
         }
+    };
 
-        applyColors(selectPebbles, GameBoard.clickedColors);
+
+    //Reset the game
+    newGameButton.addEventListener("click", function () {
+        const attempLists = document.querySelectorAll(".attempt-el-wrapper");
+        const correctPebbles = correctPebbleList.querySelectorAll(".correct-pebble");
+        removeElements(correctPebbleList, correctPebbles);
+        removeElements(attemptContent, attempLists);
+        initializeGame();
     });
+
 
 }());
