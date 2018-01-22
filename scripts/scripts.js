@@ -21,6 +21,7 @@
         codeToGuess: ["red", "green", "black", "white"],
         clickedColors: [],
         validationResult: [],
+        gameActive: false,
 
         //Apply correct pebbles, to correct pebble list
         applyCorrectPebbles: function () {
@@ -41,11 +42,13 @@
 
 
     //Initialize the game board
+    GameBoard.gameActive = true;
     applyColors(optionPebbles, GameBoard.gameColors);
     GameBoard.applyCorrectPebbles();
     GameBoard.applyGameRows();
     GameBoard.currentRow = document.querySelectorAll(".attempt-el-wrapper")[9];
     selectCheckButton(GameBoard.currentRow).style.visibility = "visible";
+
 
     //Apply an array of colors, to a list of game elements
     function applyColors(elements, color) {
@@ -101,8 +104,6 @@
 
     //----Code below creates functionality-----//
 
-
-
     //Select last element of parent div
     function selectCheckButton(parentElement) {
         return parentElement.lastElementChild;
@@ -138,6 +139,12 @@
             fillWithBlanks(clickedColors);
         }
         else {
+            GameBoard.gameActive = false;
+
+            alert("You won!");
+
+            selectCheckButton(GameBoard.currentRow).style.visibility = "hidden";
+
             for (let i = 0; i < clickedColors.length; i++) {
                 GameBoard.validationResult[i] = "red";
             };
@@ -164,14 +171,32 @@
         }
     }
 
-
-
     //Validate user choice by clicking select button
     attemptContent.addEventListener("click", function (el) {
         const clickedEl = el.target;
+
         if (clickedEl.className === "submitButton") {
-            validateUserGuess(GameBoard.clickedColors, GameBoard.codeToGuess);
-            applyColors(selectResultPebbles(GameBoard.currentRow), GameBoard.validationResult);
+            if (GameBoard.clickedColors.length === GameBoard.pebbleNr) {
+                const rowAbove = GameBoard.currentRow.previousElementSibling;
+
+                validateUserGuess(GameBoard.clickedColors, GameBoard.codeToGuess);
+                applyColors(selectResultPebbles(GameBoard.currentRow), GameBoard.validationResult);
+
+                if (GameBoard.gameActive === true) {
+                    if (rowAbove != null) {
+                        selectCheckButton(GameBoard.currentRow).style.visibility = "hidden";
+                        selectCheckButton(rowAbove).style.visibility = "visible";
+                        GameBoard.currentRow = rowAbove;
+                        GameBoard.clickedColors = [];
+                        GameBoard.validationResult = [];
+
+                    }
+                    else {
+                        alert("Game Over you lost!");
+                        selectCheckButton(GameBoard.currentRow).style.visibility = "hidden";
+                    }
+                }
+            };
         }
     });
 
