@@ -7,11 +7,28 @@
 </head>
 
 <body>
+    <h1>Mastermind Game</h1>
+
     <div id="game-content">
         <div id="correct-list"></div>
 
-        <button id="newgame-button">New game?</button>
+        <div id="difficulty-settings">
+            <div>
+                <label for="difficulty">Code size</label>
+                <select style="font-size:10px;" name="difficulty" id="difficulty">
+                    <option>4</option>
+                    <option>6</option>
+                    <option>8</option>
+                </select>
+            </div>
 
+            <div>
+                <label for="duplicates">Duplicates?</label>
+                <input id="duplicates" type="checkbox">
+            </div>
+
+            <button id="newgame-button">New game?</button>
+        </div>
 
         <div id="attempt-content"></div>
 
