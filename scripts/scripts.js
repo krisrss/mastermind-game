@@ -20,7 +20,7 @@ const GameBoard = {
     currentRow: null,
     pebbleNr: 4,
     gameColors: ["red", "green", "blue", "yellow", "brown", "orange", "black", "white"],
-    codeToGuess: ["red", "green", "black", "white"],
+    codeToGuess: [],
     clickedColors: [],
     validationResult: [],
     gameActive: false,
@@ -53,6 +53,7 @@ applyColors(optionPebbles, GameBoard.gameColors);
 //Initialize the game board with default state
 function initializeGame() {
     GameBoard.gameActive = true;
+    generateRandomColors();
     GameBoard.applyCorrectPebbles();
     GameBoard.applyGameRows();
     GameBoard.currentRow = document.querySelectorAll(".attempt-el-wrapper")[9];
@@ -142,6 +143,23 @@ function arraysEqual(clickedCol, generatedCol) {
     return true;
 }
 
+//Generate a random list of colors
+function generateRandomColors() {
+    let codeToGuess = GameBoard.codeToGuess;
+    for (let i = 0; i <= GameBoard.pebbleNr - 1; i++) {
+        let randomColor = Math.floor(Math.random() * GameBoard.gameColors.length);
+        codeToGuess[i] = GameBoard.gameColors[randomColor];
+
+        for (let x = 0; x <= i - 1; x++) {
+            if (codeToGuess[x] == codeToGuess[i]) {
+                i--;
+            }
+        }
+
+
+    }
+};
+
 //Validate the input that is provided by user
 function validateUserGuess(clickedColors, generatedColors) {
     if (arraysEqual(clickedColors, generatedColors) === false) {
@@ -209,12 +227,12 @@ optionList.addEventListener("click", function (el) {
     const selectPebbles = selectAttemptPebbles(GameBoard.currentRow);
 
     if (selectedEl.className === "option-pebble"
-    && GameBoard.clickedColors.length < GameBoard.pebbleNr
-    && GameBoard.gameActive === true) {
+        && GameBoard.clickedColors.length < GameBoard.pebbleNr
+        && GameBoard.gameActive === true) {
         GameBoard.clickedColors.push(selectedEl.style.backgroundColor);
     }
     else if (selectedEl.className === "option-pebble"
-    && GameBoard.clickedColors.length >= GameBoard.pebbleNr) {
+        && GameBoard.clickedColors.length >= GameBoard.pebbleNr) {
         GameBoard.clickedColors[GameBoard.clickedPebbleIndex] = selectedEl.style.backgroundColor;
     }
     applyColors(selectPebbles, GameBoard.clickedColors);
