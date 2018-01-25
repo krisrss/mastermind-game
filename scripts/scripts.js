@@ -57,10 +57,8 @@
         GameBoard.applyGameRows();
         GameBoard.currentRow = document.querySelectorAll(".attempt-el-wrapper")[9];
         selectCheckButton(GameBoard.currentRow).style.visibility = "visible";
-        GameBoard.currentRow.style.backgroundColor = "grey";
+        GameBoard.currentRow.style.backgroundColor = "#9c7248";
     };
-
-
 
     //Apply an array of colors, to a list of game elements
     function applyColors(elements, color) {
@@ -163,10 +161,7 @@
     //Validate the input that is provided by user
     function validateUserGuess(clickedColors, generatedColors) {
         if (arraysEqual(clickedColors, generatedColors) === false) {
-            for (let i = 0; i < clickedColors.length; i++) {
-                produceValidationResult(clickedColors, generatedColors, i);
-            };
-            fillWithBlanks(clickedColors);
+            produceValidationResult(clickedColors, generatedColors);
         }
         else {
             alert("You won!");
@@ -188,36 +183,66 @@
         applyColors(selectPebbles, GameBoard.codeToGuess);
     }
 
-    //Produce validation result list, displaying which colors were guessed
-    function produceValidationResult(clickedCol, generatedCol, index) {
-        if (clickedCol.indexOf(generatedCol[index]) > -1 && generatedCol[index] != clickedCol[index]) {
-            GameBoard.validationResult.push("grey");
-        }
-        else if (generatedCol[index] === clickedCol[index]) {
-            GameBoard.validationResult.unshift("red");
-        }
 
-    }
+    //Removes duplicated colors from color code
+    function removeArrayDuplicates(arrayName){
+        let colorList = [];
+        for (var i = 0; i < arrayName.length; i++) {
+            catchElements(arrayName[i]);
+        };
 
-    //Fill the remaing user guess with blanks, if user didn't guess anything
-    function fillWithBlanks(clickedCol) {
-        for (let x = 0; x < clickedCol.length; x++) {
-            if (GameBoard.validationResult[x] == null) {
-                GameBoard.validationResult.push("white");
+        function catchElements (color){
+            if (colorList.indexOf(color) !== -1) {
+                colorList.push(null);
             }
-        }
+            else{
+                colorList.push(color);
+            };
+        };
+        return colorList;
     };
+
+
+
+    //Produce validation result list, displaying which colors were guessed
+    function produceValidationResult(clickedCol, generatedCol) {
+
+        let validatedChoice = [];
+        let arrayNoDuplicates = removeArrayDuplicates(generatedCol);
+        let selectColorArray = (checkBox.checked === true) ? arrayNoDuplicates : generatedCol;
+
+        for (let i = 0; i < clickedCol.length; i++) {
+            if (clickedCol.indexOf(selectColorArray[i]) > -1 && selectColorArray[i] != clickedCol[i]) {
+                validatedChoice.push("grey");
+            }
+            else if (generatedCol[i] === clickedCol[i]) {
+                validatedChoice.unshift("red");
+            }
+            else{
+                validatedChoice.push("#fff");
+            };
+        };
+
+        //Sorts and reverses the output array
+        //This is needed in order to make colors appear in importance order
+        // Order beign red - grey - white(#fff)
+        validatedChoice.sort();
+        validatedChoice.reverse()
+
+        GameBoard.validationResult = validatedChoice;
+    };
+
 
     function removeCurrentFocus(currentButton) {
         currentButton.style.visibility = "hidden";
         GameBoard.currentRow.style.backgroundColor = "";
-    }
+    };
 
     //Move focus of the row to the row above
     function moveRowFocus(currentButton, nextRow) {
         removeCurrentFocus(currentButton);
         selectCheckButton(nextRow).style.visibility = "visible";
-        nextRow.style.backgroundColor = "grey";
+        nextRow.style.backgroundColor = "#9c7248";
         GameBoard.currentRow = nextRow;
     };
 
@@ -328,6 +353,7 @@
         const gameContent = document.querySelector("#game-content");
 
         GameBoard.clickedColors = [];
+        GameBoard.codeToGuess = [];
         GameBoard.pebbleNr = difficulty;
         gameContent.style.width = screenWidth;
 
@@ -361,5 +387,4 @@
             setResultBlocSize("69px")
         }
     });
-}())
-
+}());
